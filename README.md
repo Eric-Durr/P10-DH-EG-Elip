@@ -1,8 +1,5 @@
-# SSI P07 - IMPLEMENTACIÓN DE CBC
+# SSI P08 - IMPLEMENTACIÓN DEL CIFRADO DE ElGamal
 
-[![C/C++ CI](https://github.com/Eric-Durr/PRCT06-AES/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/Eric-Durr/PRCT06-AES/actions/workflows/c-cpp.yml)
-
-> Se implementa el algoritmo de Rijndael.
 
 **Estructura del repositorio:**
 
@@ -16,7 +13,7 @@ prct06-AES/
 ├─ .gitignore                                   # Ignored files git config file
 ├─ makefile                                     # C++ tasks automation file
 ├─ Doxyfile                                     # Doxygen configuration file 
-├─ Practica8ModoCBC.pdf                         # P07 - assignment
+├─ PracticaElGamal.pdf                          # P08 - assignment
 ├─ README.md                                    # Front repository information file
 ```
 
