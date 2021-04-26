@@ -9,8 +9,8 @@ DOCUMENTATION_PATH = docs
 DOXYGEN_CONFIGURATION_FILE_NAME = Doxyfile
 
 # Executable file name 
-BIN_NAME = cbc_simulator
-TEST_NAME = cbc_simulator_test
+BIN_NAME = el_gamal
+TEST_NAME = el_gamal_test
 
 # File extentions
 SRC_EXT = cpp

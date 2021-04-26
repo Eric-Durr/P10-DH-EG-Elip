@@ -1,5 +1,8 @@
 
 #include <iostream>
+#include <iostream>
+#include <string>
+
 /**
  * @brief Checks the program command line input. If the input is the desired returns 0
  * and the main program can proceed.
@@ -9,39 +12,70 @@
  * @return int 
  */
 
+bool is_prime(int p)
+{
+  if (p == 0 || p == 1)
+    return false;
+  for (int i = 2; i < p; ++i)
+    if (p % i == 0)
+      return false;
+  return true;
+}
+
 int filter(int argc, char *argv[])
 {
 
-  if (argc < 4)
+  if (argc < 6)
   {
     std::cout << "ERROR: missing input arguments\n";
-    std::cout << "USAGE: " << argv[0] << "<hex_IV_grid_string> <hex_key_grid_string> <hex_input_grid_string_1> <hex_input_grid_string_2> ... [trace]\n";
+    std::cout << "USAGE: " << argv[0] << "<prime number> <a integer> <k secret> <x secret> <message number>\n";
     return 1;
-  }
-  if (std::string{argv[2]}.size() != 32)
-  {
-    std::cout << "ERROR: wrong IV string , must contain 16 hex numbers\n";
-    std::cout << "USAGE: " << argv[0] << " <hex_IV_grid_string>  <hex_key_grid_string> <hex_input_grid_string_1> <hex_input_grid_string_2> ...  [trace]\n";
-    return 2;
-  }
-  if (std::string{argv[3]}.size() != 32)
-  {
-    std::cout << "ERROR: wrong Key string , must contain 16 hex numbers\n";
-    std::cout << "USAGE: " << argv[0] << " <hex_IV_grid_string>  <hex_key_grid_string> <hex_input_grid_string_1> <hex_input_grid_string_2> ...  [trace]\n";
-    return 2;
-  }
-  for (int i = 3; i < (argc - 1); ++i)
-  {
-
-    if (std::string{argv[i]}.size() != 32)
-    {
-      std::cout << "ERROR: wrong input string , must contain 16 hex numbers\n";
-      std::cout << "USAGE: " << argv[0] << "<hex_IV_grid_string>  <hex_key_grid_string> <hex_input_grid_string_1> <hex_input_grid_string_2> ... [trace]\n";
-      return 3;
-    }
   }
 
   /* CASES */
 
+  return 0;
+}
+
+unsigned f_exp(unsigned x, unsigned y, unsigned mod)
+{
+  unsigned res = 1;
+  x %= mod; // updating x
+  if (x == 0)
+    return 0;
+
+  while (y > 0)
+  {
+    // multiply x with res when y is odd
+    if (y & 1)
+      res = (res * x) % mod;
+    // y = y/2
+    y >>= 1;
+    // Change x to x^2
+    x = (x * x) % mod;
+  }
+  return res;
+}
+
+int gcdExtended(int a, int b, int &x, int &y)
+{
+  if (a == 0)
+  {
+    x = 0;
+    y = 1;
+    return b;
+  }
+  int x1, y1;
+  int gcd = gcdExtended(b % a, a, x1, y1);
+  x = y1 - (b / a) * x1;
+  y = x1;
+  return gcd;
+}
+
+unsigned mod_mult_inv(unsigned num, unsigned mod)
+{
+  for (unsigned x = 1; x < mod; x++)
+    if (((num % mod) * (x % mod)) % mod == 1)
+      return x;
   return 0;
 }

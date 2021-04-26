@@ -1,5 +1,5 @@
 /*!
- * ## Assignment 07 | CBC MODE
+ * ## Assignment 08 | ElGamal
  * ### Escuela Superior de Ingeniería y Tecnología (ESIT)
  * ### Seguridad en Sistemas Informáticos | 3rd course of Informatic Engineering
  *
