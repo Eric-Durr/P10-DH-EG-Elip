@@ -12,16 +12,6 @@
  * @return int 
  */
 
-bool is_prime(int p)
-{
-  if (p == 0 || p == 1)
-    return false;
-  for (int i = 2; i < p; ++i)
-    if (p % i == 0)
-      return false;
-  return true;
-}
-
 int filter(int argc, char *argv[])
 {
 
@@ -35,6 +25,16 @@ int filter(int argc, char *argv[])
   /* CASES */
 
   return 0;
+}
+
+bool is_prime(int p)
+{
+  if (p == 0 || p == 1)
+    return false;
+  for (int i = 2; i < p; ++i)
+    if (p % i == 0)
+      return false;
+  return true;
 }
 
 unsigned f_exp(unsigned x, unsigned y, unsigned mod)

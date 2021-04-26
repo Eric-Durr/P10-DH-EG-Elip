@@ -45,17 +45,17 @@ int main(int argc, char *argv[])
   invK = mod_mult_inv(Ka, p);
   decipheredtxt = (invK * Ka * plaintxt) % p;
 
-  std::cout << "\nEntrada: p = "
-            << p << ", a = "
-            << a << ", k = "
-            << k << ", x = "
-            << x << ", m = "
+  std::cout << "\nEntrada: p="
+            << p << ", a="
+            << a << ", k="
+            << k << ", x="
+            << x << ", m="
             << plaintxt
             << "\nSalida: Ya="
             << Ya << ", Yb="
             << Yb << ", K="
             << Ka << ", C="
-            << ciphertxt << ", K^(-1) = "
+            << ciphertxt << ", K^(-1)="
             << invK
             << ", M=" << decipheredtxt
             << "\n";
