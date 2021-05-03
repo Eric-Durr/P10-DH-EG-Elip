@@ -103,10 +103,10 @@ std::vector<int> encode(std::string msg, const int &block_sz)
 int filter(int argc, char *argv[])
 {
 
-  if (argc < 6)
+  if (argc < 5)
   {
     std::cout << "ERROR: missing input arguments\n";
-    std::cout << "USAGE: " << argv[0] << "<prime number> <a integer> <k secret> <x secret> <message number>\n";
+    std::cout << "USAGE: " << argv[0] << "<plain text> <p> <q> <d>\n";
     return 1;
   }
 
@@ -125,9 +125,9 @@ bool is_prime(int p)
   return true;
 }
 
-unsigned f_exp(unsigned x, unsigned y, unsigned mod)
+int f_exp(int x, int y, int mod)
 {
-  unsigned res = 1;
+  int res = 1;
   x %= mod; // updating x
   if (x == 0)
     return 0;
@@ -145,49 +145,42 @@ unsigned f_exp(unsigned x, unsigned y, unsigned mod)
   return res;
 }
 
-bool le_pe_test(const int &prime_to_check, int tries = 1)
+bool le_pe_test(const int &num, int tries = 1)
 {
-  // (1)  prime_to_check over 2,3,5,7,11
-  if (!(prime_to_check % 2) ||
-      !(prime_to_check % 3) ||
-      !(prime_to_check % 5) ||
-      !(prime_to_check % 7) ||
-      !(prime_to_check % 11))
+  std::srand(time(NULL));
+  int a = 2 + (rand() % (num - 1));
+  int e = (num - 1) / 2;
+
+  while (tries > 0)
   {
-    return false;
-  }
-  else
-  {
-    // (2) random integer number between 2 and p-1
-    std::srand(time(NULL));
-    int a = 2 + (std::rand() % (prime_to_check - 1));
-    // (2) a^(p-1)/2 mod prime_to_check
-    int exp = (prime_to_check - 1) / 2;
-    int result;
-    for (unsigned i = 0; i < tries; ++i)
+
+    // calculating final value using formula
+    int result = ((int)(pow(a, e))) % num;
+
+    //if not equal, try for different base
+    if ((result % num) == 1 || (result % num) == (num - 1))
     {
-      int result = ((int)(std::pow(a, exp))) % prime_to_check;
-      if ((result % prime_to_check) != 1 || (result % prime_to_check) == (prime_to_check - 1))
-      {
-        return false;
-      }
-      else
-      {
-        a = 2 + (std::rand() % (prime_to_check - 1));
-      }
+      a = 2 + (rand() % (num - 1));
+      tries -= 1;
     }
 
-    return true;
+    // else return negative
+    else
+      return false;
   }
+
+  // return positive after attempting
+  return true;
 }
 
 int ext_gcd(int a, int b, int &x, int &y)
 {
-  if (a == 0)
+  if (a == 0) // When base is 0, the only expected result is the module
   {
     x = 0, y = 1;
     return b;
   }
+  // When base case isn't trigered, the recursive function keeps calling
 
   int x1, y1;
   int gcd = ext_gcd(b % a, a, x1, y1);
@@ -203,4 +196,14 @@ unsigned mod_mult_inv(int num, int mod)
   int x, y;
   unsigned g = ext_gcd(num, mod, x, y);
   return (g != 1) ? 0 : (x % mod + mod) % mod;
+}
+
+std::vector<int> cipher(std::vector<int> blocks, const int &e, const int &n)
+{
+  std::vector<int> c_blocks;
+  for (unsigned i = 0; i < blocks.size(); ++i)
+  {
+    c_blocks.push_back(f_exp(blocks[i], e, n));
+  }
+  return c_blocks;
 }
