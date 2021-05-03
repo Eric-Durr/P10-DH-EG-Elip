@@ -1,10 +1,10 @@
-# SSI P08 - IMPLEMENTACIÓN DEL CIFRADO DE ElGamal
+# SSI P09 - IMPLEMENTACIÓN DEL CIFRADO RSA
 
 
 **Estructura del repositorio:**
 
 ```
-prct06-AES/
+prct09-RSA/
 ├─ docs/                                        # Project documentation folder
 ├─ include/                                     # Library files folder
 │  ├─ Catch2/catch.h                            ## C++ TDD testing framework
@@ -13,7 +13,7 @@ prct06-AES/
 ├─ .gitignore                                   # Ignored files git config file
 ├─ makefile                                     # C++ tasks automation file
 ├─ Doxyfile                                     # Doxygen configuration file 
-├─ PracticaElGamal.pdf                          # P08 - assignment
+├─ Practica9RSA.pdf                             # P09 - assignment
 ├─ README.md                                    # Front repository information file
 ```
 
@@ -28,7 +28,7 @@ $ make
 **Ejecución del programa**
 
 ```bash
-$ ./el_gamal <prime number> <a integer> <k secret> <x secret> <message number>
+$ ./rsa <text> <p> <q> <d> <message number>
 
 ```
 

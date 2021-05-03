@@ -1,5 +1,5 @@
 /*!
- * ## Assignment 08 | ElGamal
+ * ## Assignment 09 | RSA
  * ### Escuela Superior de Ingeniería y Tecnología (ESIT)
  * ### Seguridad en Sistemas Informáticos | 3rd course of Informatic Engineering
  *
@@ -13,3 +13,4 @@
 
 #define CATCH_CONFIG_MAIN
 #include "../include/Catch2/catch.h"
+#include "./rsa.test.h"
