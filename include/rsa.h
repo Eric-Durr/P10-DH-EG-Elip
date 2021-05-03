@@ -3,14 +3,38 @@
 #include <algorithm>
 #include <math.h>
 #include <string>
+#include <vector>
 
 const std::vector<std::string> alphabet =
     {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
      "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+/**
+ * @brief Checks the program command line input. If the input is the desired returns 0
+ * and the main program can proceed.
+ * 
+ * @param argc 
+ * @param argv 
+ * @return long 
+ */
+
+long filter(long argc, char *argv[])
+{
+
+  if (argc < 4)
+  {
+    std::cout << "ERROR: missing input arguments\n";
+    std::cout << "USAGE: " << argv[0] << "<p> <q> <d>\n";
+    return 1;
+  }
+
+  /* CASES */
+
+  return 0;
+}
 
 unsigned pos_in_aplh(const std::string &character)
 {
-  int i = 0;
+  long i = 0;
   for (auto element : alphabet)
   {
     if (character == element)
@@ -26,9 +50,9 @@ void to_upper(std::string &str)
                  [](unsigned char c) { return toupper(c); });
 }
 
-int block_sz(const int &n)
+long block_sz(const long &n)
 {
-  int j = 1;
+  long j = 1;
   while (1)
   {
     if (std::pow(alphabet.size(), j) > n)
@@ -41,9 +65,9 @@ int block_sz(const int &n)
   return j;
 }
 
-std::vector<int> encode(std::string msg, const int &block_sz)
+std::vector<long> encode(std::string msg, const long &block_sz)
 {
-  std::vector<int> blocks;
+  std::vector<long> blocks;
   std::vector<std::string> divided_msg;
 
   // clean message spaces
@@ -57,7 +81,7 @@ std::vector<int> encode(std::string msg, const int &block_sz)
   }
   msg = clean_msg;
 
-  // divide message into block sizes:
+  // divide message longo block sizes:
   while (!msg.empty())
   {
     divided_msg.push_back(msg.substr(0, block_sz));
@@ -79,10 +103,10 @@ std::vector<int> encode(std::string msg, const int &block_sz)
     }
   }
 
-  for (int i = 0; i < divided_msg.size(); ++i)
+  for (unsigned i = 0; i < divided_msg.size(); ++i)
   {
-    int block = 0;
-    for (int j = block_sz - 1, k = 0; j >= 0; --j, ++k)
+    long block = 0;
+    for (long j = block_sz - 1, k = 0; j >= 0; --j, ++k)
     {
       block += pos_in_aplh(std::string{divided_msg[i][k]}) * std::pow(alphabet.size(), j);
     }
@@ -91,43 +115,19 @@ std::vector<int> encode(std::string msg, const int &block_sz)
   return blocks;
 }
 
-/**
- * @brief Checks the program command line input. If the input is the desired returns 0
- * and the main program can proceed.
- * 
- * @param argc 
- * @param argv 
- * @return int 
- */
-
-int filter(int argc, char *argv[])
-{
-
-  if (argc < 5)
-  {
-    std::cout << "ERROR: missing input arguments\n";
-    std::cout << "USAGE: " << argv[0] << "<plain text> <p> <q> <d>\n";
-    return 1;
-  }
-
-  /* CASES */
-
-  return 0;
-}
-
-bool is_prime(int p)
+bool is_prime(long p)
 {
   if (p == 0 || p == 1)
     return false;
-  for (int i = 2; i < p; ++i)
+  for (long i = 2; i < p; ++i)
     if (p % i == 0)
       return false;
   return true;
 }
 
-int f_exp(int x, int y, int mod)
+long f_exp(long x, long y, long mod)
 {
-  int res = 1;
+  long res = 1;
   x %= mod; // updating x
   if (x == 0)
     return 0;
@@ -145,17 +145,17 @@ int f_exp(int x, int y, int mod)
   return res;
 }
 
-bool le_pe_test(const int &num, int tries = 1)
+bool le_pe_test(const long &num, long tries = 1)
 {
   std::srand(time(NULL));
-  int a = 2 + (rand() % (num - 1));
-  int e = (num - 1) / 2;
+  long a = 2 + (rand() % (num - 1));
+  long e = (num - 1) / 2;
 
   while (tries > 0)
   {
 
     // calculating final value using formula
-    int result = ((int)(pow(a, e))) % num;
+    long result = ((long)(pow(a, e))) % num;
 
     //if not equal, try for different base
     if ((result % num) == 1 || (result % num) == (num - 1))
@@ -173,7 +173,20 @@ bool le_pe_test(const int &num, int tries = 1)
   return true;
 }
 
-int ext_gcd(int a, int b, int &x, int &y)
+long gcd(long a, long b)
+{
+  long temp;
+  while (1)
+  {
+    temp = a % b;
+    if (temp == 0)
+      return b;
+    a = b;
+    b = temp;
+  }
+}
+
+long ext_gcd(long a, long b, long &x, long &y)
 {
   if (a == 0) // When base is 0, the only expected result is the module
   {
@@ -182,8 +195,8 @@ int ext_gcd(int a, int b, int &x, int &y)
   }
   // When base case isn't trigered, the recursive function keeps calling
 
-  int x1, y1;
-  int gcd = ext_gcd(b % a, a, x1, y1);
+  long x1, y1;
+  long gcd = ext_gcd(b % a, a, x1, y1);
 
   x = y1 - (b / a) * x1;
   y = x1;
@@ -191,16 +204,16 @@ int ext_gcd(int a, int b, int &x, int &y)
   return gcd;
 }
 
-unsigned mod_mult_inv(int num, int mod)
+unsigned mod_mult_inv(long num, long mod)
 {
-  int x, y;
+  long x, y;
   unsigned g = ext_gcd(num, mod, x, y);
   return (g != 1) ? 0 : (x % mod + mod) % mod;
 }
 
-std::vector<int> cipher(std::vector<int> blocks, const int &e, const int &n)
+std::vector<long> cipher(std::vector<long> blocks, const long &e, const long &n)
 {
-  std::vector<int> c_blocks;
+  std::vector<long> c_blocks;
   for (unsigned i = 0; i < blocks.size(); ++i)
   {
     c_blocks.push_back(f_exp(blocks[i], e, n));

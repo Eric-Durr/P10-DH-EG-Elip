@@ -75,10 +75,10 @@ SCENARIO("Block encoding")
   GIVEN("A string message and n-value")
   {
     std::string msg = "HELLO WORLD";
-    int n = 2947;
+    long n = 2947;
     WHEN("computing the block size")
     {
-      int sz = block_sz(n);
+      long sz = block_sz(n);
       THEN("String isnt changed")
       {
         CHECK(sz == 2);
@@ -86,7 +86,7 @@ SCENARIO("Block encoding")
     }
     AND_WHEN("Computing block number value for ABCD")
     {
-      int encoded_str = encode("ABCD EF", 4)[0];
+      long encoded_str = encode("ABCD EF", 4)[0];
       THEN("encoded single block value is 731")
       {
         CHECK(encoded_str == 731);
@@ -137,8 +137,8 @@ SCENARIO("High end ciphering test case")
 {
   GIVEN("msg=MANDA DINEROS, p=421, q=7 and d=1619")
   {
-    int p = 421, q = 7, d = 1619;
-    int n = p * q, phi = (p - 1) * (q - 1);
+    long p = 421, q = 7, d = 1619;
+    long n = p * q, phi = (p - 1) * (q - 1);
     std::string msg = "manda dineros";
     to_upper(msg);
     WHEN("Checking p and q prime numbers")

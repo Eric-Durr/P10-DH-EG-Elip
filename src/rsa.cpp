@@ -1,80 +1,76 @@
-//Program for RSA asymmetric cryptographic algorithm
-//for demonstration values are relatively small compared to practical application
-
 #include <iostream>
-#include <math.h>
+#include "../include/rsa.h"
 
-using namespace std;
-
-//to find gcd
-int gcd(int a, int h)
+int main(long argc, char *argv[])
 {
-  int temp;
-  while (1)
-  {
-    temp = a % h;
-    if (temp == 0)
-      return h;
-    a = h;
-    h = temp;
-  }
-}
+     if (filter(argc, argv) != 0)
+          return 1;
 
-int main()
-{
-  //2 random prime numbers
-  double p = 61;
-  double q = 53;
-  double n = p * q;
-  double count;
-  double totient = (p - 1) * (q - 1);
+     std::cout << "\n----SIMULADOR DE CIFRADO RSA-----\n\n";
+     std::cout << "Parámetros longroducidos:\n";
+     long p = std::stoi(argv[1]);
+     long q = std::stoi(argv[2]);
+     long d = std::stoi(argv[3]);
+     std::cout << "P=" << p << "\n"
+               << "q=" << q << "\n"
+               << "d=" << d << "\n\n";
+     std::cout << "Comprobando paridad de p y q ...\n";
 
-  //public key
-  //e stands for encrypt
-  double e = 17;
+     if (is_prime(p))
+     {
+          if (is_prime(q))
+          {
+               std::cout << "Ambos números son pares se procede con el cifrado...\n";
+          }
+          else
+          {
+               std::cout << "q=" << q << " no es primo, cancelando el cifrado...\n";
+               return 3;
+          }
+     }
+     else
+     {
+          std::cout << "p=" << p << " no es primo, cancelando el cifrado...\n";
+          return 2;
+     }
 
-  //for checking co-prime which satisfies e>1
-  while (e < totient)
-  {
-    count = gcd(e, totient);
-    if (count == 1)
-      break;
-    else
-      e++;
-  }
+     std::cout << "Calculando n y phi(n) ...\n";
 
-  //private key
-  //d stands for decrypt
-  double d;
+     long n = p * q;
+     long phi = (p - 1) * (q - 1);
+     long e = 2;
+     long count;
+     std::cout << "Comprobando primalidad de d con phi(n)=" << phi << " ...\n";
 
-  //k can be any arbitrary value
-  double k = 1;
+     if (gcd(d, phi) != 1)
+     {
+          std::cout << "No se cumple que d=" << d << " sea primo con phi(n)=" << phi << ", cancelando cifrado ...\n";
+          return 4;
+     }
+     else
+     {
+          std::cout << "d=" << d << " es primo con phi(n)=" << phi << ", se procede con el cifrado ...\n";
+     }
+     e = mod_mult_inv(d, phi);
+     std::cout << "Valor de clave de cifrado e=" << e << "\n";
 
-  //choosing d such that it satisfies d*e = 1 + k * totient
-  d = (int)((1 + (k * totient)) / e);
-  double msg = 123;
-  double c = pow(msg, e);
-  double m = pow(c, d);
-  c = fmod(c, n);
-  m = fmod(m, n);
-
-  cout << "Message data = " << msg;
-  cout << "\n"
-       << "p = " << p;
-  cout << "\n"
-       << "q = " << q;
-  cout << "\n"
-       << "n = pq = " << n;
-  cout << "\n"
-       << "totient = " << totient;
-  cout << "\n"
-       << "e = " << e;
-  cout << "\n"
-       << "d = " << d;
-  cout << "\n"
-       << "Encrypted data = " << c;
-  cout << "\n"
-       << "Original Message sent = " << m;
-
-  return 0;
+     char cmsg[1000];
+     std::cout << "Introduzca el mensaje a cifrar: ";
+     std::cin.getline(cmsg, 1000);
+     std::string msg = cmsg;
+     to_upper(msg);
+     std::cout << "Texto a encriptar: " << msg << "\n";
+     std::cout << "Como n=" << n << " se divide eltexto en bloques de "
+               << block_sz(n) << " caracteres\n";
+     std::vector<long> blocks = encode(msg, block_sz(n));
+     blocks.pop_back();
+     std::cout << "Bloques decimales extraidos del texto: ";
+     for (auto element : blocks)
+          std::cout << element << " ";
+     std::cout << "\n";
+     std::vector<long> cblocks = cipher(blocks, e, n);
+     std::cout << "Bloques decimales cifrados: ";
+     for (auto element : cblocks)
+          std::cout << element << " ";
+     std::cout << "\n";
 }
