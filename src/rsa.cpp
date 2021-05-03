@@ -14,13 +14,13 @@ int main(long argc, char *argv[])
      std::cout << "P=" << p << "\n"
                << "q=" << q << "\n"
                << "d=" << d << "\n\n";
-     std::cout << "Comprobando paridad de p y q ...\n";
+     std::cout << "Comprobando primalidad de p y q ...\n";
 
      if (is_prime(p))
      {
           if (is_prime(q))
           {
-               std::cout << "Ambos números son pares se procede con el cifrado...\n";
+               std::cout << "Ambos números son primos se procede con el cifrado...\n";
           }
           else
           {
@@ -38,8 +38,7 @@ int main(long argc, char *argv[])
 
      long n = p * q;
      long phi = (p - 1) * (q - 1);
-     long e = 2;
-     long count;
+
      std::cout << "Comprobando primalidad de d con phi(n)=" << phi << " ...\n";
 
      if (gcd(d, phi) != 1)
@@ -51,7 +50,7 @@ int main(long argc, char *argv[])
      {
           std::cout << "d=" << d << " es primo con phi(n)=" << phi << ", se procede con el cifrado ...\n";
      }
-     e = mod_mult_inv(d, phi);
+     long e = mod_mult_inv(d, phi);
      std::cout << "Valor de clave de cifrado e=" << e << "\n";
 
      char cmsg[1000];

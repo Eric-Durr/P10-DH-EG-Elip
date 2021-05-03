@@ -28,25 +28,39 @@ $ make
 **Ejecución del programa**
 
 ```bash
-$ ./rsa <text> <p> <q> <d> <message number>
+$ ./rsa <p> <q> <d>
 
 ```
 
-**Ejemplo sin traza**
+**Ejemplo de ejecución**
 
 ```
-./el_gamal 13 4 5 2 8
+./rsa 2347 347 5
 
-CIFRADO DE INTERCAMBIO DE CLAVES - ELGAMAL
+----SIMULADOR DE CIFRADO RSA-----
 
-Entrada: p = 13, a = 4, k = 5, x = 2, m = 8
-Salida: Ya=10, Yb=3, K=9, C=7, K^(-1) = 3, M=8
+Parámetros longroducidos:
+P=2347
+q=347
+d=5
+
+Comprobando paridad de p y q ...
+Ambos números son pares se procede con el cifrado...
+Calculando n y phi(n) ...
+Comprobando primalidad de d con phi(n)=811716 ...
+d=5 es primo con phi(n)=811716, se procede con el cifrado ...
+Valor de clave de cifrado e=649373
+Introduzca el mensaje a cifrar: amigo mio
+Texto a encriptar: AMIGO MIO
+Como n=814409 se divide eltexto en bloques de 4 caracteres
+Bloques decimales extraidos del texto: 8326 254398
+Bloques decimales cifrados: 587813 526359
 ```
 
 
 **Referencias y enlaces:**
 
-- [Enlace al repositorio](https://github.com/Eric-Durr/P08-ElGamal)
+- [Enlace al repositorio](https://github.com/Eric-Durr/P09-RSA)
 
 
 **Licencia**
