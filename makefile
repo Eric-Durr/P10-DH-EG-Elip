@@ -9,8 +9,8 @@ DOCUMENTATION_PATH = docs
 DOXYGEN_CONFIGURATION_FILE_NAME = Doxyfile
 
 # Executable file name 
-BIN_NAME = rsa
-TEST_NAME = rsa_test
+BIN_NAME = elip
+TEST_NAME = elip_test
 
 # File extentions
 SRC_EXT = cpp
