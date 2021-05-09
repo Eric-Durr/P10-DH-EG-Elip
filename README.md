@@ -42,6 +42,7 @@ $ ./elip
 **Referencias y enlaces:**
 
 - [Enlace al repositorio](https://github.com/Eric-Durr/P10-DH-EG-Elip)
+- [Example 1 - EG-based-eliptic](https://github.com/DhruvDixitDD/ElGamal-based-Elliptic-Curve-Cryptography)
 
 
 **Licencia**
