@@ -16,12 +16,12 @@
 #include <math.h>
 const long y_pow = 2;
 const long x_pow = 3;
-const std::string args = " <p> <a> <b> <G> <db> <da> <msg> <eg/dh> [trace]";
+const std::string args = " <p> <a> <b> <G> <db> <da> <msg> ";
 
 // Command line input filtering function
 int filter(int argc, char *argv[])
 {
-  if (argc < 9)
+  if (argc < 8)
   {
     std::cout << "ERROR: wrong number of arguments\n";
     std::cout << "USAGE:" + std::string{argv[0]} + args + "\n";
@@ -77,6 +77,16 @@ int filter(int argc, char *argv[])
   }
 
   return 0;
+}
+
+bool is_prime(long p)
+{
+  if (p == 0 || p == 1)
+    return false;
+  for (long i = 2; i < p; ++i)
+    if (p % i == 0)
+      return false;
+  return true;
 }
 
 std::pair<long, long> parse_point(const std::string &str)
@@ -233,10 +243,10 @@ long first_set_bit(const long &n)
   return 0;
 }
 
-std::pair<long, long> dh_pubkey(long d,
-                                std::pair<long, long> base,
-                                long &a,
-                                long &p)
+std::pair<long, long> pubkey(long d,
+                             std::pair<long, long> base,
+                             long &a,
+                             long &p)
 {
   int i = 0;
   std::pair<long, long> pubkey = base;
@@ -252,13 +262,11 @@ std::pair<long, long> dh_pubkey(long d,
   return pubkey;
 }
 
-std::pair<long, long> dh_shkey(long d,
-                               std::pair<long, long> point,
-                               long &a,
-                               long &p)
+std::pair<long, long> shkey(long d,
+                            std::pair<long, long> point,
+                            long &a,
+                            long &p)
 {
 
-  return dh_pubkey(d, point, a, p);
+  return pubkey(d, point, a, p);
 }
-
-std::pair<long, long> eg_pubkey() {}

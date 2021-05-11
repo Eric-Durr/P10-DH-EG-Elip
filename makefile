@@ -27,7 +27,7 @@ OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
 DEPS = $(OBJECTS:.o=.d)
 
 # Config compiling flags
-COMPILE_FLAGS = -std=c++14 -Wall -g
+COMPILE_FLAGS = -std=c++14 -Wall -g -lglut -lGLU -lGL
 INCLUDES = -I include/ -I /usr/local/include
 # Space-separated pkg-config libraries used by this project
 LIBS = catch.h
@@ -85,3 +85,5 @@ test:
 	./$(TEST_NAME) 
 
 
+graphic:
+ g++ -o elip src/ecc.cpp -lglut -lGLU -lGL

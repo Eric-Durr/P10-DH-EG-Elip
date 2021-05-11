@@ -9,8 +9,29 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#include "../include/dh-ec.h"
+#include "../include/ecc.h"
 #include <vector>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+
+void display()
+{
+     glClearColor(0.0, 0.0, 0.0, 1.0);
+     glClear(GL_COLOR_BUFFER_BIT);
+     glColor3f(0.0, 0.0, 1.0);
+     glBegin(GL_LINES);
+     glVertex2i(20, 20);
+     glVertex2i(150, 150);
+     glEnd();
+
+     //draw
+
+     glFlush();
+}
+void init()
+{
+}
 
 int main(int argc, char *argv[])
 {
@@ -18,10 +39,15 @@ int main(int argc, char *argv[])
      {
           return flag;
      }
-     std::cout << "--- " << (std::string{argv[8]} == "eg" ? "ElGamal" : "Diffie-Hellman") << " based elliptic encryption ---\n";
+     std::cout << "--- ElGamal and Diffie-Hellman based elliptic encryption ---\n";
 
      std::cout << "Generating introduced values...\n";
      long p = std::stoi(argv[1]);
+     if (!is_prime(p))
+     {
+          std::cout << "ERROR: el número p (módulo) debe ser primo, se ha introducido p=" << p << "\n";
+          return 1;
+     }
      long a = std::stoi(argv[2]);
      long b = std::stoi(argv[3]);
      std::pair<long, long> base = parse_point(argv[4]);
@@ -46,15 +72,15 @@ int main(int argc, char *argv[])
           std::cout << "(" << point.first << "," << point.second << ") ";
      std::cout << "\n";
      std::cout << "Generating public keys for Bob and Alice...\n";
-     std::pair<long, long> pub_b = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_pubkey(db, base, a, p);
-     std::pair<long, long> pub_a = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_pubkey(da, base, a, p);
+     std::pair<long, long> pub_b = pubkey(db, base, a, p);
+     std::pair<long, long> pub_a = pubkey(da, base, a, p);
 
      std::cout << "dbG=(" << pub_b.first << "," << pub_b.second << ")\n";
      std::cout << "daG=(" << pub_a.first << "," << pub_a.second << ")\n";
 
      std::cout << "Generating private keys for Bob and Alice...\n";
-     std::pair<long, long> shared_a = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_shkey(da, pub_b, a, p);
-     std::pair<long, long> shared_b = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_shkey(db, pub_a, a, p);
+     std::pair<long, long> shared_a = shkey(da, pub_b, a, p);
+     std::pair<long, long> shared_b = shkey(db, pub_a, a, p);
 
      std::cout << db << "*(" << pub_a.first << "," << pub_a.second << ") = (" << shared_b.first << "," << shared_b.second << ")\n";
 
@@ -67,9 +93,22 @@ int main(int argc, char *argv[])
      std::cout << "h=" << p << "/" << M << "=" << h << "\n";
      std::pair<long, long> msg_point = msg_2_point(msg, h, M, e_points);
      std::cout << "plain text msg as point: Qm=(" << msg_point.first << "," << msg_point.second << ")\n";
-     std::cout << "Ciphered message and public key sent fromn Allice to Bob: \n";
+     std::cout << "Ciphered message and public key sent from Allice to Bob: \n";
      std::pair<long, long> c_msg = add_points(msg_point, shared_a, a, p);
 
-     std::cout << "{(" << c_msg.first << "," << c_msg.second << ") ; (" << pub_a.first << "," << pub_a.second << ")}\n";
+     std::cout << "{ Ciphered message: (" << c_msg.first << "," << c_msg.second << ") ; Public shared key: (" << pub_a.first << "," << pub_a.second << ")}\n";
+
+     std::cout << "Drawing curve ...\n";
+
+     glutInit(&argc, argv);
+     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+     glutInitWindowSize(500, 500);
+     glutInitWindowPosition(0, 0);
+     glutCreateWindow("Elliptic curve");
+     gluOrtho2D(0.0, 499.0, 0.0, 499.0);
+     glutDisplayFunc(display);
+
+     glutMainLoop();
+
      return 0;
 }
