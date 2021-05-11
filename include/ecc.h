@@ -114,13 +114,43 @@ std::vector<std::pair<long, long>> extract_points(const long &p, const long &a, 
   return common;
 }
 
+unsigned int to_positive_mod(int a, unsigned int m)
+{
+  while (a < 0)
+  {
+    a += m;
+  }
+  return a % m;
+}
+
+int ext_euclidian_alg(int a, int b, int *t, int *s)
+{
+  // Base Case
+  if (a == 0)
+  {
+    *t = 0, *s = 1;
+    return b;
+  }
+
+  int temp_t;
+  int temp_s;
+  int gcd = ext_euclidian_alg(b % a, a, &temp_t, &temp_s);
+
+  *t = temp_s - (b / a) * temp_t;
+  *s = temp_t;
+
+  return gcd;
+}
+
 long inv_mod(long num, long p)
 {
-  num = num % p;
-  for (long x = 1; x < p; x++)
-    if ((num * x) % p == 1)
-      return x;
+  int t, s;
+  int gcd = ext_euclidian_alg(num, p, &t, &s);
 
+  if (gcd == 1)
+  {
+    return to_positive_mod(t, p);
+  }
   return 0;
 }
 
@@ -131,50 +161,21 @@ long neg_inv_mod(long num, long p)
   return num % p;
 }
 
-bool equal_points(std::pair<long, long> p1, std::pair<long, long> p2)
-{
-  return (p1.first == p2.first) && (p1.second == p2.second);
-}
-
 std::pair<long, long> add_points(std::pair<long, long> p1, std::pair<long, long> p2, long &a, long &p)
 {
-  long num, den, lambda;
-  bool use_negative = false;
+  int temp = to_positive_mod(p2.first - p1.first, p);
+  int slope = to_positive_mod((p2.second - p1.second) * inv_mod(temp, p), p);
+  long rx = to_positive_mod((pow(slope, 2) - p1.first - p2.first), p);
+  long ry = to_positive_mod((slope * (p1.first - rx) - p1.second), p);
+  return std::pair<long, long>{rx, ry};
+}
 
-  if (equal_points(p1, p2))
-  {
-    num = (3 * std::pow(p1.first, 2)) + a;
-    den = 2 * p1.second;
-  }
-  else
-  {
-    num = p2.second - p1.second;
-    den = p2.first - p1.first;
-  }
+std::pair<long, long> double_point(std::pair<long, long> p1, long &a, long &p)
+{
 
-  if (num * den < 0)
-    use_negative = true;
-
-  num = std::abs(num);
-  den = std::abs(den);
-
-  lambda = ((num % p) * inv_mod(den, p)) % p;
-  if (use_negative)
-    lambda = (neg_inv_mod(-1, p) % p) * lambda % p;
-
-  long rx = std::pow(lambda, 2) - p1.first - p2.first;
-  long ry = lambda * (p1.first - rx) - p1.second;
-
-  if (rx < 0)
-    rx = neg_inv_mod(rx, p);
-  else
-    rx = rx % p;
-
-  if (ry < 0)
-    ry = neg_inv_mod(ry, p);
-  else
-    ry = ry % p;
-
+  int slope = (3 * pow(p1.first, 2) + a) * inv_mod(2 * p1.second, p);
+  long rx = to_positive_mod(pow(slope, 2) - 2 * p1.first, p);
+  long ry = to_positive_mod(slope * (p1.first - rx) - p1.second, p);
   return std::pair<long, long>{rx, ry};
 }
 
@@ -221,25 +222,43 @@ std::pair<long, long> msg_2_point(const long &m, const long &h, const long M, co
   return msg_as_point;
 }
 
+long first_set_bit(const long &n)
+{
+  int i;
+  for (i = (sizeof(int) * 8) - 1; i >= 0; --i)
+  {
+    if (((1 << i) & n))
+      return i;
+  }
+  return 0;
+}
+
 std::pair<long, long> dh_pubkey(long d,
                                 std::pair<long, long> base,
                                 long &a,
                                 long &p)
 {
-  if (d == 1)
-    return base;
-  else
-  {
-    std::pair<long, long> result = add_points(base, base, a, p);
-    int counter = d - 2;
-    while (counter > 0)
-    {
-      result = add_points(base, result, a, p);
-      counter--;
-    }
+  int i = 0;
+  std::pair<long, long> pubkey = base;
 
-    return result;
+  for (i = first_set_bit(d) - 1; i >= 0; --i)
+  {
+    pubkey = double_point(pubkey, a, p);
+
+    if ((1 << i) & d) // if the bit at index 'i' is 1 then point addition
+      pubkey = add_points(pubkey, base, a, p);
   }
+
+  return pubkey;
+}
+
+std::pair<long, long> dh_shkey(long d,
+                               std::pair<long, long> point,
+                               long &a,
+                               long &p)
+{
+
+  return dh_pubkey(d, point, a, p);
 }
 
 std::pair<long, long> eg_pubkey() {}

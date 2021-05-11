@@ -47,17 +47,20 @@ int main(int argc, char *argv[])
      std::cout << "\n";
      std::cout << "Generating public keys for Bob and Alice...\n";
      std::pair<long, long> pub_b = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_pubkey(db, base, a, p);
-
-     std::cout << "dbG=(" << pub_b.first << "," << pub_b.second << ")\n";
      std::pair<long, long> pub_a = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_pubkey(da, base, a, p);
 
+     std::cout << "dbG=(" << pub_b.first << "," << pub_b.second << ")\n";
      std::cout << "daG=(" << pub_a.first << "," << pub_a.second << ")\n";
+
      std::cout << "Generating private keys for Bob and Alice...\n";
-     std::pair<long, long> priv_a; //= //mult_point(da, pub_b, a, p); /* = funtion */
-     std::pair<long, long> priv_b; //= //mult_point(db, pub_a, a, p); /* = funtion */
-     std::cout << db << "*(dbG)=(" << priv_b.first << "," << priv_b.second << ")\n"
-               << da << "*(daG)=(" << priv_a.first << "," << priv_a.second << ")\n";
-     std::cout << "Ciphering message...\n";
+     std::pair<long, long> shared_a = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_shkey(da, pub_b, a, p);
+     std::pair<long, long> shared_b = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_shkey(db, pub_a, a, p);
+
+     std::cout << db << "*(" << pub_a.first << "," << pub_a.second << ") = (" << shared_b.first << "," << shared_b.second << ")\n";
+
+     std::cout << da << "*(" << pub_b.first << "," << pub_b.second << ") = (" << shared_a.first << "," << shared_a.second << ")\n";
+
+     std::cout << "Ciphering message process...\n";
      long M = great_strict_pow(msg);
      long h = p / M;
      std::cout << "M=" << M << "\n";
@@ -65,7 +68,7 @@ int main(int argc, char *argv[])
      std::pair<long, long> msg_point = msg_2_point(msg, h, M, e_points);
      std::cout << "plain text msg as point: Qm=(" << msg_point.first << "," << msg_point.second << ")\n";
      std::cout << "Ciphered message and public key sent fromn Allice to Bob: \n";
-     std::pair<long, long> c_msg; //= add_points(msg_point, priv_a, a, p);
+     std::pair<long, long> c_msg = add_points(msg_point, shared_a, a, p);
 
      std::cout << "{(" << c_msg.first << "," << c_msg.second << ") ; (" << pub_a.first << "," << pub_a.second << ")}\n";
      return 0;
