@@ -10,28 +10,9 @@
  * 
  */
 #include "../include/ecc.h"
+#include "../include/plot/pbPlots.hpp"
+#include "../include/plot/supportLib.hpp"
 #include <vector>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-
-void display()
-{
-     glClearColor(0.0, 0.0, 0.0, 1.0);
-     glClear(GL_COLOR_BUFFER_BIT);
-     glColor3f(0.0, 0.0, 1.0);
-     glBegin(GL_LINES);
-     glVertex2i(20, 20);
-     glVertex2i(150, 150);
-     glEnd();
-
-     //draw
-
-     glFlush();
-}
-void init()
-{
-}
 
 int main(int argc, char *argv[])
 {
@@ -49,7 +30,9 @@ int main(int argc, char *argv[])
           return 1;
      }
      long a = std::stoi(argv[2]);
+
      long b = std::stoi(argv[3]);
+
      std::pair<long, long> base = parse_point(argv[4]);
      long db = std::stoi(argv[5]);
      long da = std::stoi(argv[6]);
@@ -99,16 +82,19 @@ int main(int argc, char *argv[])
      std::cout << "{ Ciphered message: (" << c_msg.first << "," << c_msg.second << ") ; Public shared key: (" << pub_a.first << "," << pub_a.second << ")}\n";
 
      std::cout << "Drawing curve ...\n";
+     RGBABitmapImageReference *imageRef = CreateRGBABitmapImageReference();
 
-     glutInit(&argc, argv);
-     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-     glutInitWindowSize(500, 500);
-     glutInitWindowPosition(0, 0);
-     glutCreateWindow("Elliptic curve");
-     gluOrtho2D(0.0, 499.0, 0.0, 499.0);
-     glutDisplayFunc(display);
-
-     glutMainLoop();
+     std::vector<double> x;
+     std::vector<double> y;
+     for (auto point : e_points)
+     {
+          x.push_back(point.first);
+          y.push_back(point.second);
+     }
+     DrawScatterPlot(imageRef, 600, 400, &x, &y);
+     std::vector<double> *pngData = ConvertToPNG(imageRef->image);
+     WriteToFile(pngData, "elip.png");
+     DeleteImage(imageRef->image);
 
      return 0;
 }
