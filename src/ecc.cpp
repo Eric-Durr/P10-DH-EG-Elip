@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#include "../include/ecc.h"
+#include "../include/dh-ec.h"
 #include <vector>
 
 int main(int argc, char *argv[])
@@ -19,13 +19,14 @@ int main(int argc, char *argv[])
           return flag;
      }
      std::cout << "--- " << (std::string{argv[8]} == "eg" ? "ElGamal" : "Diffie-Hellman") << " based elliptic encryption ---\n";
+
      std::cout << "Generating introduced values...\n";
      long p = std::stoi(argv[1]);
      long a = std::stoi(argv[2]);
      long b = std::stoi(argv[3]);
      std::pair<long, long> base = parse_point(argv[4]);
-     long da = std::stoi(argv[5]);
-     long db = std::stoi(argv[6]);
+     long db = std::stoi(argv[5]);
+     long da = std::stoi(argv[6]);
      long msg = std::stoi(argv[7]);
      std::cout
          << "p=" << p << "\n"
@@ -33,10 +34,10 @@ int main(int argc, char *argv[])
          << "b=" << b << "\n"
          << "G="
          << "(" << base.first << "," << base.second << ")\n"
-         << "da=" << da << "\n"
-         << "db=" << db << "\n"
+         << "db=" << da << "\n"
+         << "da=" << db << "\n"
          << "Plain text msg=" << msg << "\n";
-
+     std::cout << "\nOperating over elliptic curve:  y^2 (mod " << p << ") = x^3 + " << a << "*x + " << b << "(mod " << p << ")\n\n";
      std::cout << "Generating E curve points...\n";
 
      std::vector<std::pair<long, long>> e_points = extract_points(p, a, b);
@@ -45,23 +46,27 @@ int main(int argc, char *argv[])
           std::cout << "(" << point.first << "," << point.second << ") ";
      std::cout << "\n";
      std::cout << "Generating public keys for Bob and Alice...\n";
-     std::pair<long, long> db_point; /* = funtion */
-     std::pair<long, long> da_point; /* = funtion */
-     std::cout << "dbG=(" << db_point.first << "," << db_point.second << ")\n"
-               << "daG=(" << da_point.first << "," << da_point.second << ")\n";
-     std::cout << "Generating private keys for Bob and Alice...\n";
-     std::pair<long, long> priv_b; /* = funtion */
-     std::pair<long, long> priv_a; /* = funtion */
-     std::cout << "db*(daG)=(" << priv_b.first << "," << priv_b.second << ")\n"
-               << "da*(dbG)=(" << priv_a.first << "," << priv_a.second << ")\n";
-     std::cout << "Ciphering message...\n";
-     long c_msg;
-     long h;
-     std::cout << "Ciphered msg=" << c_msg << "\n";
-     std::cout << "h=" << h << "\n";
-     std::pair<long, long> msg_point;
-     std::cout << "plain text msg as point=" << msg_point.first << "," << msg_point.second << ")\n";
-     std::cout << "Ciphered message and public key sent fromn Allice to Bob: \n";
+     std::pair<long, long> pub_b = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_pubkey(db, base, a, p);
 
+     std::cout << "dbG=(" << pub_b.first << "," << pub_b.second << ")\n";
+     std::pair<long, long> pub_a = (std::string{argv[8]} == "eg") ? eg_pubkey() : dh_pubkey(da, base, a, p);
+
+     std::cout << "daG=(" << pub_a.first << "," << pub_a.second << ")\n";
+     std::cout << "Generating private keys for Bob and Alice...\n";
+     std::pair<long, long> priv_a; //= //mult_point(da, pub_b, a, p); /* = funtion */
+     std::pair<long, long> priv_b; //= //mult_point(db, pub_a, a, p); /* = funtion */
+     std::cout << db << "*(dbG)=(" << priv_b.first << "," << priv_b.second << ")\n"
+               << da << "*(daG)=(" << priv_a.first << "," << priv_a.second << ")\n";
+     std::cout << "Ciphering message...\n";
+     long M = great_strict_pow(msg);
+     long h = p / M;
+     std::cout << "M=" << M << "\n";
+     std::cout << "h=" << p << "/" << M << "=" << h << "\n";
+     std::pair<long, long> msg_point = msg_2_point(msg, h, M, e_points);
+     std::cout << "plain text msg as point: Qm=(" << msg_point.first << "," << msg_point.second << ")\n";
+     std::cout << "Ciphered message and public key sent fromn Allice to Bob: \n";
+     std::pair<long, long> c_msg; //= add_points(msg_point, priv_a, a, p);
+
+     std::cout << "{(" << c_msg.first << "," << c_msg.second << ") ; (" << pub_a.first << "," << pub_a.second << ")}\n";
      return 0;
 }
