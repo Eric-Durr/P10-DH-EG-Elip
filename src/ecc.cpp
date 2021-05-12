@@ -81,20 +81,28 @@ int main(int argc, char *argv[])
 
      std::cout << "{ Ciphered message: (" << c_msg.first << "," << c_msg.second << ") ; Public shared key: (" << pub_a.first << "," << pub_a.second << ")}\n";
 
-     std::cout << "Drawing curve ...\n";
-     RGBABitmapImageReference *imageRef = CreateRGBABitmapImageReference();
+     std::cout << "Creating curve file ...\n\n\n\n\n";
 
-     std::vector<double> x;
-     std::vector<double> y;
+     std::ofstream elip;
+     elip.open("elip-log.txt");
+     elip << "y ^ 2(mod " << p << ") = x ^ 3 + " << a << " * x + " << b << "(mod " << p << ")\n ";
+     elip << "-\n";
      for (auto point : e_points)
-     {
-          x.push_back(point.first);
-          y.push_back(point.second);
-     }
-     DrawScatterPlot(imageRef, 600, 400, &x, &y);
-     std::vector<double> *pngData = ConvertToPNG(imageRef->image);
-     WriteToFile(pngData, "elip.png");
-     DeleteImage(imageRef->image);
+          elip << point.first << "," << point.second << "\n";
+     elip << "-\n";
+     elip << pub_a.first << "," << pub_a.second << "\n";
+     elip << pub_b.first << "," << pub_b.second << "\n";
+     elip << "-\n";
+     elip << shared_a.first << "," << shared_a.second << "\n";
+     elip << shared_b.first << "," << shared_b.second << "\n";
+     elip << "-\n";
+     elip << msg_point.first << "," << msg_point.second << "\n";
+     elip << "-\n";
+     elip << c_msg.first << "," << c_msg.second << "\n";
 
-     return 0;
+     elip.close();
+    :cout << "\n";
+}
+
+return 0;
 }
