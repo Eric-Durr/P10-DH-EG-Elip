@@ -10,8 +10,6 @@
  * 
  */
 #include "../include/ecc.h"
-#include "../include/plot/pbPlots.hpp"
-#include "../include/plot/supportLib.hpp"
 #include <vector>
 
 int main(int argc, char *argv[])
@@ -26,13 +24,22 @@ int main(int argc, char *argv[])
      long p = std::stoi(argv[1]);
      if (!is_prime(p))
      {
-          std::cout << "ERROR: el número p (módulo) debe ser primo, se ha introducido p=" << p << "\n";
+          std::cout << "ERROR: number p (modulo) must be a prime number,introduced p=" << p << " please retry with a prime number\n";
           return 1;
      }
      long a = std::stoi(argv[2]);
-
      long b = std::stoi(argv[3]);
 
+     if (a <= 0 || a >= p)
+     {
+          std::cout << "ERROR: <a> must be a number between 0 and p=" << p << "  reatry with a number on the boundry\n";
+          return 1;
+     }
+     if (b <= 0 || b >= p)
+     {
+          std::cout << "ERROR: <b> must be a number between 0 and p=" << p << "  reatry with a number on the boundry\n";
+          return 1;
+     }
      std::pair<long, long> base = parse_point(argv[4]);
      long db = std::stoi(argv[5]);
      long da = std::stoi(argv[6]);
@@ -81,28 +88,5 @@ int main(int argc, char *argv[])
 
      std::cout << "{ Ciphered message: (" << c_msg.first << "," << c_msg.second << ") ; Public shared key: (" << pub_a.first << "," << pub_a.second << ")}\n";
 
-     std::cout << "Creating curve file ...\n\n\n\n\n";
-
-     std::ofstream elip;
-     elip.open("elip-log.txt");
-     elip << "y ^ 2(mod " << p << ") = x ^ 3 + " << a << " * x + " << b << "(mod " << p << ")\n ";
-     elip << "-\n";
-     for (auto point : e_points)
-          elip << point.first << "," << point.second << "\n";
-     elip << "-\n";
-     elip << pub_a.first << "," << pub_a.second << "\n";
-     elip << pub_b.first << "," << pub_b.second << "\n";
-     elip << "-\n";
-     elip << shared_a.first << "," << shared_a.second << "\n";
-     elip << shared_b.first << "," << shared_b.second << "\n";
-     elip << "-\n";
-     elip << msg_point.first << "," << msg_point.second << "\n";
-     elip << "-\n";
-     elip << c_msg.first << "," << c_msg.second << "\n";
-
-     elip.close();
-    :cout << "\n";
-}
-
-return 0;
+     return 0;
 }

@@ -28,7 +28,7 @@ $ make
 **Ejecución del programa**
 
 ```bash
-$ ./elip <p> <a> <b> <G> <db> <da> <eg/dh> [trace]
+$ ./elip <p> <a> <b> <G> <db> <da>
 
 ```
 
@@ -42,9 +42,6 @@ $ ./elip <p> <a> <b> <G> <db> <da> <eg/dh> [trace]
 **Referencias y enlaces:**
 
 - [Enlace al repositorio](https://github.com/Eric-Durr/P10-DH-EG-Elip)
-- [Example 1 - EG-based-eliptic](https://github.com/DhruvDixitDD/ElGamal-based-Elliptic-Curve-Cryptography)
-- [Example 2 - EG-based-eliptic](https://github.com/akhilravipati97/ECC-Diffie-Hellman)
-
 
 **Licencia**
 
